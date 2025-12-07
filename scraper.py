@@ -12,6 +12,14 @@ from datetime import datetime
 from io import StringIO
 import time
 
+# Load environment variables from .env file if it exists
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+    print("✅ Loaded configuration from .env file")
+except ImportError:
+    print("ℹ️  python-dotenv not installed, using environment variables")
+
 # Try to import scrapegraphai, fallback to basic scraping if not available
 try:
     from scrapegraphai.graphs import SmartScraperGraph
@@ -24,7 +32,11 @@ def get_groq_config():
     """Get Groq API configuration"""
     api_key = os.environ.get('GROQ_API_KEY')
     if not api_key:
-        raise ValueError("GROQ_API_KEY environment variable not set!")
+        raise ValueError(
+            "GROQ_API_KEY environment variable not set!\n"
+            "For local setup: Create a .env file with your API key\n"
+            "For GitHub Actions: Add GROQ_API_KEY to repository secrets"
+        )
     
     return {
         "llm": {
